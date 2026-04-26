@@ -45,6 +45,15 @@ loop.sh create -f <start> <end> '<pattern>'
 
 **Example Usage**
 
+File before run the command create -f
+```
+QUESTIONS_NO_1.docx  
+QUESTIONS_NO_2.docx   
+QUESTIONS_NO_3.docx   
+...  
+QUESTIONS_NO_10.docx 
+```
+
 ```
 loop.sh create -f 1 10 'QUESTIONS_NO_*'
 ```
@@ -54,11 +63,15 @@ loop.sh create -f 1 10 'QUESTIONS_NO_*'
 This command will create the following folders:
 
 ```
-QUESTIONS_NO_1  
+QUESTIONS_NO_1 
+|-  QUESTIONS_NO_1.docx
 QUESTIONS_NO_2  
+|-  QUESTIONS_NO_2.docx
 QUESTIONS_NO_3  
+|-  QUESTIONS_NO_3.docx
 ...  
 QUESTIONS_NO_10
+|-  QUESTIONS_NO_10.docx
 ```
 
 **Important Notes**
