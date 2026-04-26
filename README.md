@@ -1,5 +1,23 @@
 # Scripts
 
+# Say Hello
+
+Make it executable:
+
+```
+chmod +x say_hello.sh
+```
+Run it:
+
+```
+say_loop.sh
+```
+You’ll see:
+
+```
+Hello
+```
+
 # Loop
 
 ## How to Use the **loop** Script
@@ -9,7 +27,7 @@
 Run this once:
 
 ```
-chmod +x loop
+chmod +x loop.sh
 ```
 
 ## **Run the create action**
