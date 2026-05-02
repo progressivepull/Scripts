@@ -1,3 +1,11 @@
+# dandoc
+* [Pandoc Official Website](https://pandoc.org/)
+
+``` bash
+pandoc -t gfm --extract-media . "main.docx" -o main.md
+```
+
+
 # Scripts
 
 # Say Hello
@@ -19,6 +27,8 @@ Hello
 ```
 
 # Loop
+
+# 🏗️ CREATE MODE
 
 ## How to Use the **loop** Script
 
@@ -111,3 +121,65 @@ loop.sh create -f
 - Provide a start number, end number, and a pattern
 - Use * where the number should go
 - Always wrap the pattern in quotes
+
+# 🗑️ DELETE MODE
+The delete action removes a single file.
+
+## ✅ Command Format
+
+``` bash
+./loop.sh delete <filename>
+```
+
+## 📌 Example
+
+``` bash
+./loop.sh delete w.txt
+```
+If the file exists, you will see:
+
+``` 
+Running delete
+Deleted w.txt
+```
+If not:
+
+``` 
+Running delete
+w.txt does not exist
+```
+
+# Convert DOCX → Markdown
+Convert a .docx file to GitHub‑Flavored Markdown using Pandoc.
+Images are extracted into a media/ folder.
+
+``` bash
+./loop.sh convert -s <file_name>
+```
+### Example
+
+```
+./loop.sh convert -s main
+
+```
+This converts:
+
+```
+main.docx → main.md
+
+```
+
+# Help
+Show all available commands:
+
+``` bash
+./loop.sh help
+```
+
+
+# 📝 Summary
+
+* **create →** generates numbered folders
+* **delete →** removes a file
+* Always quote patterns containing *
+* Script validates inputs and prints helpful messages

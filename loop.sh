@@ -3,6 +3,33 @@
 action=$1
 flag=$2
 
+show_help() {
+    echo ""
+    echo "Usage:"
+    echo "  loop.sh create -f <start> <end> '<pattern>'"
+    echo "      Create folders by replacing * in the pattern with numbers."
+    echo ""
+    echo "  loop.sh delete <file1> [file2 ...]"
+    echo "      Delete one or more files."
+    echo ""
+    echo "  loop.sh delete -d <folder>"
+    echo "      Delete a folder."
+    echo ""
+    echo "  loop.sh convert -s <file_name>"
+    echo "      Convert <file_name>.docx → <file_name>.md using pandoc."
+    echo ""
+    echo "  loop.sh help"
+    echo "      Show this help menu."
+    echo ""
+}
+
+# HELP
+if [[ "$action" == "help" || -z "$action" ]]; then
+    show_help
+    exit 0
+fi
+
+# CREATE
 if [[ "$action" == "create" ]]; then
     echo "Running create"
 
@@ -13,7 +40,7 @@ if [[ "$action" == "create" ]]; then
         pattern=$5
 
         if [[ -z "$start" || -z "$end" || -z "$pattern" ]]; then
-            echo "Usage: $0 create [-f] <start> <end> <pattern>"
+            echo "Usage: loop.sh create -f <start> <end> '<pattern>'"
             exit 1
         fi
 
@@ -35,21 +62,71 @@ if [[ "$action" == "create" ]]; then
     fi
 fi
 
-
+# DELETE
 if [[ "$action" == "delete" ]]; then
     echo "Running delete"
 
-    filename="$2"   
+    # Delete folder mode
+    if [[ "$flag" == "-d" ]]; then
+        folder="$3"
 
-    if [[ -z "$filename" ]]; then
-        echo "Usage: $0 delete <filename>"
+        if [[ -z "$folder" ]]; then
+            echo "Usage: loop.sh delete -d <folder>"
+            exit 1
+        fi
+
+        if [[ -d "$folder" ]]; then
+            rm -r "$folder"
+            echo "Deleted folder: $folder"
+        else
+            echo "Folder '$folder' does not exist"
+        fi
+
+        exit 0
+    fi
+
+    # Delete multiple files
+    shift 1  # remove "delete"
+    if [[ $# -eq 0 ]]; then
+        echo "Usage: loop.sh delete <file1> [file2 ...]"
         exit 1
     fi
 
-    if [[ -e "$filename" ]]; then
-        rm "$filename"
-        echo "Deleted $filename"
-    else
-        echo "$filename does not exist"
+    for file in "$@"; do
+        if [[ -e "$file" ]]; then
+            rm "$file"
+            echo "Deleted file: $file"
+        else
+            echo "File '$file' does not exist"
+        fi
+    done
+fi
+
+# CONVERT
+if [[ "$action" == "convert" ]]; then
+    echo "Running convert"
+
+    if [[ "$flag" == "-s" ]]; then
+        file="$3"
+
+        if [[ -z "$file" ]]; then
+            echo "Usage: loop.sh convert -s <file_name>"
+            exit 1
+        fi
+
+        # Ensure .docx exists
+        if [[ ! -f "${file}.docx" ]]; then
+            echo "Error: ${file}.docx not found"
+            exit 1
+        fi
+
+        # Convert DOCX → Markdown
+        pandoc -t gfm --extract-media . "${file}.docx" -o "${file}.md"
+
+        echo "Converted ${file}.docx → ${file}.md"
+        exit 0
     fi
+
+    echo "Usage: loop.sh convert -s <file_name>"
+    exit 1
 fi
