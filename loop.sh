@@ -18,10 +18,14 @@ show_help() {
     echo "  loop.sh convert -s <file_name>"
     echo "      Convert <file_name>.docx → <file_name>.md using pandoc."
     echo ""
+    echo "  loop.sh convert -m"
+    echo "      Convert ALL .docx files (recursively) to .md using pandoc."
+    echo ""
     echo "  loop.sh help"
     echo "      Show this help menu."
     echo ""
 }
+
 
 # HELP
 if [[ "$action" == "help" || -z "$action" ]]; then
@@ -106,6 +110,7 @@ fi
 if [[ "$action" == "convert" ]]; then
     echo "Running convert"
 
+    # Convert a single file
     if [[ "$flag" == "-s" ]]; then
         file="$3"
 
@@ -114,19 +119,39 @@ if [[ "$action" == "convert" ]]; then
             exit 1
         fi
 
-        # Ensure .docx exists
         if [[ ! -f "${file}.docx" ]]; then
             echo "Error: ${file}.docx not found"
             exit 1
         fi
 
-        # Convert DOCX → Markdown
         pandoc -t gfm --extract-media . "${file}.docx" -o "${file}.md"
-
         echo "Converted ${file}.docx → ${file}.md"
         exit 0
     fi
 
-    echo "Usage: loop.sh convert -s <file_name>"
+    # Convert ALL .docx files in all folders
+    if [[ "$flag" == "-m" ]]; then
+        echo "Converting all .docx files..."
+
+        shopt -s globstar nullglob
+        docx_files=( **/*.docx )
+
+        if [[ ${#docx_files[@]} -eq 0 ]]; then
+            echo "No .docx files found."
+            exit 1
+        fi
+
+        for f in "${docx_files[@]}"; do
+            base="${f%.docx}"
+            pandoc -t gfm --extract-media . "$f" -o "${base}.md"
+            echo "Converted $f → ${base}.md"
+        done
+
+        exit 0
+    fi
+
+    echo "Usage:"
+    echo "  loop.sh convert -s <file_name>"
+    echo "  loop.sh convert -m"
     exit 1
 fi

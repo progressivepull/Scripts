@@ -1,10 +1,12 @@
-# dandoc
+# Dandoc
 * [Pandoc Official Website](https://pandoc.org/)
 
 ``` bash
 pandoc -t gfm --extract-media . "main.docx" -o main.md
 ```
 
+# Microsoft Word Code Style
+* [MS Word Create style for code snippet box  | Leon Renner | YouTube](https://www.youtube.com/watch?v=busnzKKSOxU)
 
 # Scripts
 
@@ -153,6 +155,8 @@ w.txt does not exist
 Convert a .docx file to GitHub‑Flavored Markdown using Pandoc.
 Images are extracted into a media/ folder.
 
+## -f Flag
+
 ``` bash
 ./loop.sh convert -s <file_name>
 ```
@@ -168,6 +172,16 @@ This converts:
 main.docx → main.md
 
 ```
+
+## -m Flag
+
+* Searches **recursively** for all .docx files
+* Converts each one to .md
+Extracts images into a media/ folder
+
+Keeps folder structure intact
+
+
 
 # Help
 Show all available commands:
