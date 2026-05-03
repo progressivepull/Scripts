@@ -1,4 +1,6 @@
-# Dandoc
+# LoopScript
+
+# Pandoc
 * [Pandoc Official Website](https://pandoc.org/)
 
 ``` bash
@@ -175,11 +177,82 @@ main.docx → main.md
 
 ## -m Flag
 
-* Searches **recursively** for all .docx files
-* Converts each one to .md
-Extracts images into a media/ folder
+**loop.sh convert -m** scans all folders for **.docx** files, enters each folder
+that contains one, and converts every **.docx** file into a GitHub‑Flavored
+Markdown **(.md)** file. During conversion, **Pandoc** extracts all embedded
+images into a companion media folder named:
 
-Keeps folder structure intact
+``` 
+<filename>_media/
+```
+
+The resulting Markdown file uses clean relative image paths such as:
+
+```
+<img src="./<filename>_media/media/image1.png">
+```
+
+This ensures the **.md** file and its media folder stay together and work
+correctly when moved, uploaded, or committed to version control.
+
+**What the command does**
+
+- Searches recursively for all **.docx** files.
+
+- For each file:
+
+  - Changes into the directory where the .docx file is located.
+
+  - Runs Pandoc to convert the document into Markdown.
+
+  - Extracts images into \<filename\>\_media/media/.
+
+  - Writes \<filename\>.md next to the original .docx.
+
+- Produces Markdown with correct relative image paths.
+
+**Folder structure before and after**
+
+**Before**
+
+```
+PROBLEM_1/
+	PROBLEM_1.docx
+```
+
+**After running loop.sh convert -m**
+
+```
+PROBLEM_1/
+	PROBLEM_1.docx
+	PROBLEM_1.md
+	PROBLEM_1_media/
+		media/
+			image1.png
+			image2.jpeg
+```
+
+**Example of generated Markdown image tag**
+
+```html
+<img src="./PROBLEM_1_media/media/image1.png" style="width:1.84401in;height:0.66676in" \>
+```
+
+This path works because the .md file and _media folder are siblings in
+the same directory.
+
+**When to use this command**
+
+Use **convert -m** when you want to:
+
+- Convert many .docx files at once.
+
+- Preserve images with correct relative paths.
+
+- Keep each document’s media self‑contained.
+
+- Prepare Markdown for GitHub, GitLab, Obsidian, MkDocs, or static site
+  generators.
 
 
 
@@ -189,11 +262,3 @@ Show all available commands:
 ``` bash
 ./loop.sh help
 ```
-
-
-# 📝 Summary
-
-* **create →** generates numbered folders
-* **delete →** removes a file
-* Always quote patterns containing *
-* Script validates inputs and prints helpful messages
