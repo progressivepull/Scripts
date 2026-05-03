@@ -1,4 +1,4 @@
-<img src="./media/image1.png"
+<img src="PROBLEM_1/PROBLEM_1_media/media/image1.png"
 style="width:1.84401in;height:0.66676in" />
 
 **Hello World and Input**

@@ -135,23 +135,29 @@ if [[ "$action" == "convert" ]]; then
 
     # Convert ALL .docx files in all folders
     if [[ "$flag" == "-m" ]]; then
-        echo "Converting all .docx files..."
+    echo "Converting all .docx files..."
 
-        shopt -s globstar nullglob
-        docx_files=( **/*.docx )
+    shopt -s globstar nullglob
+    docx_files=( **/*.docx )
 
-        if [[ ${#docx_files[@]} -eq 0 ]]; then
-            echo "No .docx files found."
-            exit 1
-        fi
+    if [[ ${#docx_files[@]} -eq 0 ]]; then
+        echo "No .docx files found."
+        exit 1
+    fi
 
-        for f in "${docx_files[@]}"; do
-            base="${f%.docx}"
-            pandoc -t gfm --extract-media . "$f" -o "${base}.md"
-            echo "Converted $f → ${base}.md"
-        done
+    for f in "${docx_files[@]}"; do
+        base="${f%.docx}"
 
-        exit 0
+        # Extract media into a folder named "<base>_media"
+        media_dir="${base}_media"
+
+        pandoc -t gfm --extract-media="${media_dir}" "$f" -o "${base}.md"
+
+        echo "Converted $f → ${base}.md"
+        echo "Media left in: ${media_dir}/"
+    done
+
+    exit 0
     fi
 
     echo "Usage:"
