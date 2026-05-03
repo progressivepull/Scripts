@@ -3,7 +3,7 @@
 # clean_safe_mode.sh
 # Test script for: loop.sh clean (SAFE MODE)
 
-LOOP_SCRIPT="../loop.sh"
+LOOP_SCRIPT="loop.sh"
 TEST_DIR="test_clean_safe_mode"
 
 echo "Running test: clean (safe mode)"

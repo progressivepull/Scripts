@@ -3,7 +3,7 @@
 # deleting_files_and_folders.sh
 # Test script for: loop.sh delete -s, -m, -d (safe and isolated)
 
-LOOP_SCRIPT="../loop.sh"
+LOOP_SCRIPT="loop.sh"
 TEST_DIR="test_deleting_files_and_folders"
 
 echo "Running deletion tests..."

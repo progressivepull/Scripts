@@ -3,7 +3,7 @@
 # converting_documents.sh
 # Test script for: loop.sh convert -s and -m
 
-LOOP_SCRIPT="../loop.sh"
+LOOP_SCRIPT="loop.sh"
 TEST_DIR="test_converting_documents"
 
 echo "Running test: converting documents"

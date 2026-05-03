@@ -3,7 +3,7 @@
 # project_status.sh
 # Test script for: loop.sh status
 
-LOOP_SCRIPT="../loop.sh"
+LOOP_SCRIPT="loop.sh"
 TEST_DIR="test_project_status"
 
 echo "Running test: project status"

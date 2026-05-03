@@ -3,7 +3,7 @@
 # move_files_into_matching_folders.sh
 # Test script for: loop.sh move
 
-LOOP_SCRIPT="../loop.sh"
+LOOP_SCRIPT="loop.sh"
 TEST_DIR="test_move_files_into_matching_folders"
 
 echo "Running test: move files into matching folders"
