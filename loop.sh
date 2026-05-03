@@ -21,10 +21,14 @@ show_help() {
     echo "  loop.sh convert -m"
     echo "      Convert ALL .docx files (recursively) to .md using pandoc."
     echo ""
+    echo "  loop.sh move"
+    echo "      Move files into folders with matching names (e.g., file.txt → file/)."
+    echo ""
     echo "  loop.sh help"
     echo "      Show this help menu."
     echo ""
 }
+
 
 
 # HELP
@@ -154,4 +158,25 @@ if [[ "$action" == "convert" ]]; then
     echo "  loop.sh convert -s <file_name>"
     echo "  loop.sh convert -m"
     exit 1
+fi
+
+# MOVE
+if [[ "$action" == "move" ]]; then
+    echo "Running move"
+
+    shopt -s nullglob
+
+    for file in *; do
+        # Skip directories
+        [[ -d "$file" ]] && continue
+
+        base="${file%.*}"   # remove extension
+
+        if [[ -d "$base" ]]; then
+            echo "Moving '$file' → '$base/'"
+            mv "$file" "$base/"
+        fi
+    done
+
+    exit 0
 fi
