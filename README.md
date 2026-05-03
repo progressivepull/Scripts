@@ -47,19 +47,7 @@ PROBLEM_3
 PROBLEM_4
 PROBLEM_5
 ```
-Pratice Command
-```
-$ mkdir FOLDER_CREATION
 
-$ cd FOLDER_CREATION
-
-$ ./loop.sh create -f 1 5 'PROBLEM_*'
-Created: PROBLEM_1
-Created: PROBLEM_2
-Created: PROBLEM_3
-Created: PROBLEM_4
-Created: PROBLEM_5
-```
 
 ## 🗑️ Deleting Files and Folders
 
@@ -79,12 +67,65 @@ Deletes:
 ``` bash
 ./loop.sh delete -s <name>
 ```
+### Delete inside each PROBLEM_X directory
 
-Pratice Command
+``` bash
+./loop.sh delete -m
 ```
-$ mkdir SPECIFIC_DELETE
-$ cd SPECIFIC_DELETE
-$ touch x.md
-$ mkdir x_media
-$ loop.sh delete -s x
+### Delete a folder
+``` bash
+./loop.sh delete -d <folder>
+```
 
+### Example dry‑run
+
+``` bash
+./loop.sh delete -s PROBLEM_3 --dry
+```
+
+## 🔄 Converting Documents
+
+### Convert a single .docx file
+
+``` bash
+./loop.sh convert -s <file_name>
+```
+
+### Convert all .docx files recursively
+
+``` bash
+./loop.sh convert -m
+```
+
+Each .docx produces:
+
+* <name>.md
+* <name>_media/
+  
+## 📦 Move Files Into Matching Folders
+Moves any file into a folder with the same base name:
+
+``` bash
+./loop.sh move
+```
+Example:
+
+``` bash
+notes.txt → notes/notes.txt
+```
+
+## 📊 Project Status
+Scan the entire project for .md files and _media folders:
+
+``` bash
+./loop.sh status
+```  
+
+## 🧹 Clean (Safe Mode)
+Lists everything that would be deleted:
+
+``` bash
+./loop.sh clean
+```
+This mode is non‑destructive.
+Deletion lines are commented out in the script for safety.
