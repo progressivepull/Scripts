@@ -135,7 +135,7 @@ if [[ "$action" == "convert" ]]; then
 
     # Convert ALL .docx files in all folders
     if [[ "$flag" == "-m" ]]; then
-    echo "Converting all .docx files..."
+  echo "Converting all .docx files..."
 
     shopt -s globstar nullglob
     docx_files=( **/*.docx )
@@ -146,21 +146,26 @@ if [[ "$action" == "convert" ]]; then
     fi
 
     for f in "${docx_files[@]}"; do
-        base="${f%.docx}"
+        dir=$(dirname "$f")        # folder containing the .docx
+        file=$(basename "$f")      # filename.docx
+        base="${file%.docx}"       # filename
+        media_dir="${base}_media"  # filename_media
 
-        # Media folder: PROBLEM_1_media
-        media_dir="${base}_media"
+        echo "Processing: $f"
 
-        # Convert with HTML image tags + custom media folder
-        pandoc \
-            --from=docx \
-            --to=gfm \
-            --extract-media="${media_dir}" \
-            --wrap=none \
-            "$f" -o "${base}.md"
+        (
+            cd "$dir" || exit
 
-        echo "Converted $f → ${base}.md"
-        echo "Media extracted to: ${media_dir}/"
+            pandoc \
+                --from=docx \
+                --to=gfm \
+                --extract-media="${media_dir}" \
+                --wrap=none \
+                "$file" -o "${base}.md"
+        )
+
+        echo "Converted $f → $dir/${base}.md"
+        echo "Media extracted to: $dir/${media_dir}/"
     done
 
     exit 0
