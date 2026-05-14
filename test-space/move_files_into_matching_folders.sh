@@ -3,15 +3,10 @@
 # move_files_into_matching_folders.sh
 # Test script for: loop.sh move
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LOOP_SCRIPT="$SCRIPT_DIR/../loop.sh"
-
-# Source colors.sh from parent (LoopScript/)
-source "$SCRIPT_DIR/../colors.sh"
-
+LOOP_SCRIPT="loop.sh"
 TEST_DIR="test_move_files_into_matching_folders"
 
-echo -e "${BLUE}Running test: move files into matching folders${RESET}"
+echo "Running test: move files into matching folders"
 echo ""
 
 # Reset test directory
@@ -22,7 +17,7 @@ cd "$TEST_DIR" || exit
 # ─────────────────────────────────────────────
 # SETUP TEST STRUCTURE
 # ─────────────────────────────────────────────
-echo -e "${BLUE}Setting up test environment...${RESET}"
+echo "Setting up test environment..."
 
 # Matching folders
 mkdir fileA fileB fileC
@@ -36,7 +31,7 @@ echo "data" > fileC.docx
 echo "data" > unmatched.txt
 mkdir random_folder
 
-echo -e "${MAGENTA}Environment ready.${RESET}"
+echo "Environment ready."
 echo ""
 
 # ─────────────────────────────────────────────
@@ -53,31 +48,31 @@ PASS=true
 
 # Check moved files
 if [[ -f fileA/fileA.txt ]]; then
-    echo -e "${GREEN}✔ PASS:${RESET} fileA.txt moved correctly"
+    echo "✔ PASS: fileA.txt moved correctly"
 else
-    echo -e "${RED}✘ FAIL:${RESET} fileA.txt not moved"
+    echo "✘ FAIL: fileA.txt not moved"
     PASS=false
 fi
 
 if [[ -f fileB/fileB.md ]]; then
-    echo -e "${GREEN}✔ PASS:${RESET} fileB.md moved correctly"
+    echo "✔ PASS: fileB.md moved correctly"
 else
-    echo -e "${RED}✘ FAIL:${RESET} fileB.md not moved"
+    echo "✘ FAIL: fileB.md not moved"
     PASS=false
 fi
 
 if [[ -f fileC/fileC.docx ]]; then
-    echo -e "${GREEN}✔ PASS:${RESET} fileC.docx moved correctly"
+    echo "✔ PASS: fileC.docx moved correctly"
 else
-    echo -e "${RED}✘ FAIL:${RESET} fileC.docx not moved"
+    echo "✘ FAIL: fileC.docx not moved"
     PASS=false
 fi
 
 # Check files that should NOT be moved
 if [[ -f unmatched.txt ]]; then
-    echo -e "${GREEN}✔ PASS:${RESET} unmatched.txt correctly left in place"
+    echo "✔ PASS: unmatched.txt correctly left in place"
 else
-    echo -e "${RED}✘ FAIL:${RESET} unmatched.txt was moved incorrectly"
+    echo "✘ FAIL: unmatched.txt was moved incorrectly"
     PASS=false
 fi
 
@@ -87,9 +82,9 @@ echo ""
 # FINAL RESULT
 # ─────────────────────────────────────────────
 if [[ "$PASS" == true ]]; then
-    echo -e "🎉 All move tests ${GREEN}PASSED!${RESET}"
+    echo "🎉 All move tests PASSED!"
 else
-    echo -e "❌ Some move tests ${RED}FAILED.${RESET}"
+    echo "❌ Some move tests FAILED."
 fi
 
 echo ""

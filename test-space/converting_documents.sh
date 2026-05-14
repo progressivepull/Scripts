@@ -3,20 +3,10 @@
 # converting_documents.sh
 # Test script for: loop.sh convert -s and -m
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LOOP_SCRIPT="$SCRIPT_DIR/../loop.sh"
-
+LOOP_SCRIPT="loop.sh"
 TEST_DIR="test_converting_documents"
 
-action=$1
-
-select_menu() {
-echo -e "${BLUE}Select the test you want to run:${RESET}"
-echo -e "${CYAN}1${RESET}) convert -s sample"
-echo -e "${CYAN}2${RESET}) convert -m (recursive)"
-}
-
-echo -e "${BLUE}Running test: converting documents${RESET}"
+echo "Running test: converting documents"
 echo ""
 
 # Reset test directory
@@ -27,7 +17,7 @@ cd "$TEST_DIR" || exit
 # ─────────────────────────────────────────────
 # SETUP TEST STRUCTURE
 # ─────────────────────────────────────────────
-echo -e "${BLUE}Setting up test environment...${RESET}"
+echo "Setting up test environment..."
 
 mkdir A B
 
@@ -35,90 +25,69 @@ mkdir A B
 echo "PK" > A/sample.docx
 echo "PK" > B/another.docx
 
-echo -e "${MAGENTA}Environment ready.${RESET}"
+echo "Environment ready."
 echo ""
 
 # ─────────────────────────────────────────────
 # TEST 1: convert -s sample
 # ─────────────────────────────────────────────
+echo "TEST 1: convert -s sample"
+$LOOP_SCRIPT convert -s A/sample
 
-if [[ "$action" == "1" ]]; then
+echo ""
+echo "Checking results..."
 
-	echo "TEST 1: convert -s sample"
-	$LOOP_SCRIPT convert -s A/sample
+PASS=true
 
-	echo ""
-	echo "Checking results..."
-
-	PASS=true
-
-	if [[ -f A/sample.md ]]; then
-		echo -e "${GREEN} ✔ PASS:${RESET} sample.md created"
-	else
-		echo -e "${RED}✘ FAIL:${RESET} sample.md missing"
-		PASS=false
-	fi
-
-	if [[ -d A/sample_media ]]; then
-		echo -e "${GREEN} ✔ PASS:${RESET} sample_media folder created"
-	else
-		echo -e "${RED}✘ FAIL:${RESET} sample_media missing"
-		PASS=false
-	fi
-
-	echo ""
+if [[ -f A/sample.md ]]; then
+    echo "✔ PASS: sample.md created"
+else
+    echo "✘ FAIL: sample.md missing"
+    PASS=false
 fi
+
+if [[ -d A/sample_media ]]; then
+    echo "✔ PASS: sample_media folder created"
+else
+    echo "✘ FAIL: sample_media missing"
+    PASS=false
+fi
+
+echo ""
 
 # ─────────────────────────────────────────────
 # TEST 2: convert -m (recursive)
 # ─────────────────────────────────────────────
+echo "TEST 2: convert -m"
+$LOOP_SCRIPT convert -m
 
-if [[ "$action" == "2" ]]; then
-	echo "TEST 2: convert -m"
-	$LOOP_SCRIPT convert -m
+echo ""
+echo "Checking results..."
 
-	echo ""
-	echo "Checking results..."
-
-	if [[ -f B/another.md ]]; then
-		echo -e "${GREEN} ✔ PASS:${RESET} another.md created"
-	else
-		echo -e "${RED}✘ FAIL:${RESET} another.md missing"
-		PASS=false
-	fi
-
-	if [[ -d B/another_media ]]; then
-		echo -e "${GREEN} ✔ PASS:${RESET} another_media folder created"
-	else
-		echo -e "${RED}✘ FAIL:${RESET} another_media missing"
-		PASS=false
-	fi
-
-	echo ""
+if [[ -f B/another.md ]]; then
+    echo "✔ PASS: another.md created"
+else
+    echo "✘ FAIL: another.md missing"
+    PASS=false
 fi
+
+if [[ -d B/another_media ]]; then
+    echo "✔ PASS: another_media folder created"
+else
+    echo "✘ FAIL: another_media missing"
+    PASS=false
+fi
+
+echo ""
 
 # ─────────────────────────────────────────────
 # FINAL RESULT
 # ─────────────────────────────────────────────
 if [[ "$PASS" == true ]]; then
-    echo -e "🎉 All convert tests ${GREEN}PASSED!${RESET}"
+    echo "🎉 All convert tests PASSED!"
 else
-    echo -e "❌ Some convert tests ${RED}FAILED.${RESET}"
+    echo "❌ Some convert tests FAILED."
 fi
 
 echo ""
 echo "Test directory located at: $TEST_DIR/"
-
-# Check if an argument was provided
-if [ -z "$1" ]; then
-    echo "No number provided as argument."
-	select_menu
-    exit 1
-fi
-
-# Check if the argument is a number
-if ! [[ "$1" =~ ^[0-9]+$ ]]; then
-    echo "Argument must be a number."
-	select_menu
-    exit 1
-fi
