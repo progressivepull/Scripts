@@ -10,7 +10,6 @@ source "$SCRIPT_DIR/../colors.sh"
 # Test script for: loop.sh create -f <start> <end> '<pattern>'
 
 TEST_DIR="test_folder_creation"
-LOOP_SCRIPT="/C/Users/whwtb/Documents/WorkSpaces/LoopScript/loop.sh"
 
 echo -e "${MAGENTA}Running folder creation test...${RESET}"
 echo ""
