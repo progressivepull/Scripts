@@ -10,28 +10,41 @@ flag=$2
 show_help() {
     echo -e "${BLUE}Usage:${RESET}"
     echo -e "  ${CYAN}loop.sh${RESET} create -f <start> <end> '<pattern>'"
-    echo ""
+	echo -e "      ${RED}Wildcard matches characters, while script creates sequentially numbered folders using ranges and customizable naming patterns.${RESET}"
+    echo -e ""
     echo -e "  ${CYAN}loop.sh${RESET} delete -s <name>"
-    echo "      Delete <name>.md and <name>_media in all directories."
+    echo -e "      ${RED}Delete <name>.md and <name>_media in all directories.${RESET}"
     echo -e ""
     echo -e "  ${CYAN}loop.sh${RESET} delete -d <folder>"
-    echo -e "      Delete a folder."
-    echo ""
+    echo -e "      ${RED}Delete a folder.${RESET}"
+    echo -e ""
     echo -e "  ${CYAN}loop.sh${RESET} delete ... --dry"
-    echo -e "      Show what WOULD be deleted (no changes)."
-    echo ""
+    echo -e "      ${RED}Show what WOULD be deleted (no changes).${RESET}"
+    echo -e ""
     echo -e "  ${CYAN}loop.sh${RESET} status"
-    echo -e "      Show .md and _media files found in the project."
-    echo ""
-    echo -e "  ${CYAN}loop.sh${RESET} clean"
-    echo -e "      SAFE MODE: Show everything that would be deleted recursively."
-    echo -e "      (Deletion lines are commented out.)"
-    echo ""
-    echo -e "  ${CYAN}loop.sh${RESET} convert -s <file>"
-    echo -e "  ${CYAN}loop.sh${RESET} convert -m"
+    echo -e "      ${RED}Show .md and _media files found in the project.${RESET}"
+    echo -e ""
+	echo -e "  ${CYAN}loop.sh${RESET} convert -s <file>"
+	echo -e "      ${RED}Convert one .docx file into Markdown with extracted media files.${RESET}"
+    echo -e ""
+	echo -e "  ${CYAN}loop.sh${RESET} convert -m"
+	echo -e "      ${RED}Convert all .docx files recursively into Markdown with separate media folders.${RESET}"
+	echo -e ""
     echo -e "  ${CYAN}loop.sh${RESET} move"
+	echo -e "      ${RED}Move files into matching folders with the same filename base automatically.${RESET}"
+	echo -e ""
+	echo -e "  ${CYAN}loop.sh${RESET} replace -m <old_text> <new_text>"
+	echo -e "      ${RED}Replace matching text recursively inside all Markdown files in the project.${RESET}"
+	echo -e ""
+	echo -e "  ${CYAN}loop.sh${RESET} insert -t <text>"
+	echo -e "      ${RED}Insert a line of text at the top of all Markdown files recursively.${RESET}"
+	echo -e ""
+	echo -e "  ${CYAN}loop.sh${RESET} insert -b <text>"
+	echo -e "      ${RED}Append a line of text to the bottom of all Markdown files recursively.${RESET}"
+	echo -e ""
     echo -e "  ${CYAN}loop.sh${RESET} help"
-    echo ""
+	echo -e "      ${RED}Display available commands, options, examples, and script usage information.${RESET}"
+    echo -e ""
 }
 
 # HELP
@@ -209,42 +222,6 @@ if [[ "$action" == "status" ]]; then
 fi
 
 
-# ─────────────────────────────────────────────
-# CLEAN (SAFE MODE)
-# ─────────────────────────────────────────────
-# Check if the action is "clean"
-if [[ "$action" == "clean" ]]; then
-    # Inform user this is a safe (dry-run) mode
-    echo -e "${YELLOW}SAFE CLEAN MODE — NO FILES WILL BE DELETED${RESET}"
-    echo -e "${YELLOW}Delete lines are commented out in this script.${RESET}"
-    echo ""
-
-    # Enable recursive globbing and ignore non-matching patterns
-    shopt -s globstar nullglob
-
-    # Loop through all Markdown (.md) files
-    for f in **/*.md; do
-        # Show what would be deleted (dry run)
-        echo -e "${YELLOW}[DRY] Would delete:${RESET} $f"
-        # Actual delete command (disabled for safety)
-        # rm "$f"
-    done
-
-    # Loop through all folders ending with "_media"
-    for d in **/*_media; do
-        # Ensure it's a directory
-        if [[ -d "$d" ]]; then
-            # Show what would be deleted (dry run)
-            echo -e "${YELLOW}[DRY] Would delete:${RESET} $d"
-            # Actual delete command (disabled for safety)
-            # rm -r "$d"
-        fi
-    done
-
-    # Exit script successfully
-    exit 0
-fi
-
 
 # ─────────────────────────────────────────────
 # CONVERT
@@ -346,4 +323,114 @@ if [[ "$action" == "move" ]]; then
 
     # Exit script successfully
     exit 0
+fi
+
+# ─────────────────────────────────────────────
+# REPLACE
+# ─────────────────────────────────────────────
+
+# Check if the requested action is "replace"
+if [[ "$action" == "replace" ]]; then
+
+    # Check if the provided flag is "-m"
+    # "-m" means replace text in multiple Markdown files
+    if [[ "$flag" == "-m" ]]; then
+
+        # Assign positional arguments:
+        # $3 = text to search for
+        # $4 = replacement text
+        old="$3"
+        new="$4"
+
+        # Enable recursive globbing:
+        # **/*.md searches all Markdown files recursively
+        # nullglob prevents errors if no files match
+        shopt -s globstar nullglob
+
+        # Loop through all Markdown files
+        for f in **/*.md; do
+
+            # Replace all occurrences of old text with new text
+            # -i edits the file directly
+            # g = global replacement on each line
+            sed -i "s/${old}/${new}/g" "$f"
+
+            # Print colored confirmation message
+            echo -e "${GREEN}Updated:${RESET} $f"
+        done
+
+        # Exit script successfully
+        exit 0
+    fi
+
+    # Show usage message if arguments are invalid
+    echo "Usage: loop.sh replace -m <old_text> <new_text>"
+    exit 1
+fi
+
+# ─────────────────────────────────────────────
+# INSERT
+# ─────────────────────────────────────────────
+
+# Check if the requested action is "insert"
+if [[ "$action" == "insert" ]]; then
+
+    # -------- TOP MODE (-t) --------
+    # Add text to the top of all Markdown files
+    if [[ "$flag" == "-t" ]]; then
+
+        # $3 = text to insert
+        text="$3"
+
+        # Enable recursive globbing
+        shopt -s globstar nullglob
+
+        # Loop through all Markdown files
+        for f in **/*.md; do
+
+            # Create temporary file
+            tmp=$(mktemp)
+
+            # Write new text first
+            echo "$text" > "$tmp"
+
+            # Append original file content
+            cat "$f" >> "$tmp"
+
+            # Replace original file
+            mv "$tmp" "$f"
+
+            # Print confirmation message
+            echo -e "${GREEN}Inserted at top:${RESET} $f"
+        done
+
+        exit 0
+    fi
+
+    # -------- BOTTOM MODE (-b) --------
+    # Add text to the bottom of all Markdown files
+    if [[ "$flag" == "-b" ]]; then
+
+        # $3 = text to insert
+        text="$3"
+
+        # Enable recursive globbing
+        shopt -s globstar nullglob
+
+        # Loop through all Markdown files
+        for f in **/*.md; do
+
+            # Append text to end of file
+            echo "$text" >> "$f"
+
+            # Print confirmation message
+            echo -e "${GREEN}Inserted at bottom:${RESET} $f"
+        done
+
+        exit 0
+    fi
+
+    # Invalid usage message
+    echo "Usage: loop.sh insert -t <text> | -b <text>"
+    exit 1
 fi
